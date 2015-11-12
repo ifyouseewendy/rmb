@@ -21,9 +21,9 @@ Or install it yourself as:
 ## Usage
 
 ```ruby
-RMB.convert('123')            # => '壹佰贰拾叁元'
-RMB.convert('12345')          # => '壹万贰仟叁佰肆拾伍元'
-RMB.convert('1,234,567,890')  # => '壹拾贰亿叁仟肆佰伍拾陆万柒仟捌佰玖拾元'
+RMB.convert 12345             # => '壹万贰仟叁佰肆拾伍元'
+RMB.convert 123.45            # => '壹佰贰拾叁元肆角伍分'
+RMB.convert '1,234,567,890'   # => '壹拾贰亿叁仟肆佰伍拾陆万柒仟捌佰玖拾元'
 ```
 
 ## License
