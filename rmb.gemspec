@@ -5,7 +5,7 @@ require 'rmb/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "rmb"
-  spec.version       = Rmb::VERSION
+  spec.version       = RMB::VERSION
   spec.authors       = ["wendi"]
   spec.email         = ["ifyouseewendy@gmail.com"]
 
