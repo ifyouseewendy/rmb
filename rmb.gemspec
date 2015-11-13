@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'rmb/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "rmb"
+  spec.name          = "rmb-chinese-yuan"
   spec.version       = RMB::VERSION
   spec.authors       = ["Di Wen"]
   spec.email         = ["ifyouseewendy@gmail.com"]
