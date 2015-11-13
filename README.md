@@ -22,9 +22,14 @@ Or install it yourself as:
 
 ```ruby
 RMB.convert 12345             # => '壹万贰仟叁佰肆拾伍元'
-RMB.convert 123.45            # => '壹佰贰拾叁元肆角伍分'
 RMB.convert '1,234,567,890'   # => '壹拾贰亿叁仟肆佰伍拾陆万柒仟捌佰玖拾元'
+RMB.convert '1234567890123'   # => ArgumentError: Length over 12
 ```
+
+## TODO
+
++ Refactor with better semantic methods
++ Add fraction support
 
 ## License
 
