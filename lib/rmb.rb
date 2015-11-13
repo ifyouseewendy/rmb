@@ -11,33 +11,52 @@ module RMB
   PART_UNIT     = %w(亿 万)
   SECTION_UNIT  = %w(元 分)
 
-
   class << self
     def convert(money)
       number  = preprocess(money)
       parts   = split(number)
       words   = parts.map {|part| meta_convert(part) }
-      join(words)
+      join(parts, words)
     end
 
     # Public: Convert number under 9999
     #
     # number - String
     def meta_convert(number)
-      return NUMBERS[0] if number.to_i == 0
+      return NUMBERS[0] if number.zero?
 
-      numbers = number.chars.map(&:to_i)
-      numbers.unshift 0 while numbers.count < 4
+      res = ''
 
-      result = numbers.map.with_index { |num,idx|
-        num == 0 ? NUMBERS[0] : [ NUMBERS[num], META_UNIT[idx] ].join
-      }.join
-      result = result.sub("#{NUMBERS[0]}#{NUMBERS[0]}#{NUMBERS[0]}", '')
-      result = result.sub("#{NUMBERS[0]}#{NUMBERS[0]}", NUMBERS[0])
-      result = result[1..-1] if result.start_with? NUMBERS[0]
-      result = result[0..-2] if result.end_with? NUMBERS[0]
+      thousand  = number / 1000
+      hundred   = number / 100 % 10
+      ten       = number / 10 % 10
+      one       = number % 10
 
-      result
+      # thousand
+      res << [ NUMBERS[thousand], META_UNIT[0] ].join unless thousand.zero?
+
+      # hundred
+      if hundred.zero?
+        if thousand.nonzero? && [ten, one].any?(&:nonzero?)
+          res << NUMBERS[0]
+        end
+      else
+        res << [ NUMBERS[hundred], META_UNIT[1] ].join
+      end
+
+      # ten
+      if ten.zero?
+        if hundred.nonzero? && one.nonzero?
+          res << NUMBERS[0]
+        end
+      else
+        res << [ NUMBERS[ten], META_UNIT[2] ].join
+      end
+
+      # one
+      res << [ NUMBERS[one], META_UNIT[3] ].join unless one.zero?
+
+      res
     end
 
     private
@@ -57,35 +76,52 @@ module RMB
         raise ArgumentError, "Length of money<#{money}> is longer than 12" \
           if money.to_s.length > 12
 
-        money
+        money.to_i
       end
 
       # Split money into three parts, each part is under 9999
       def split(number)
-        parts = number.reverse.split(/(\d{4})/).reject(&:empty?).map(&:reverse).reverse
-        parts.unshift '' while parts.count < 3
-        parts
+        [
+          number / 10**8,
+          (number / 10**4) % 10**4,
+          number % 10**4
+        ]
       end
 
       # Join words
-      def join(words)
+      def join(parts, words)
         res = ''
-        res << [ words[0], PART_UNIT[0] ].join unless words[0] == NUMBERS[0]
-        if words[1] == NUMBERS[0]
-          res << ( res.empty? ? '' : NUMBERS[0] )
+
+        yi, wan, ge = parts
+
+        # yi
+        res << [ words[0], PART_UNIT[0] ].join if yi.nonzero?
+
+        # wan
+        if wan.zero?
+          if yi.nonzero? && ge.nonzero?
+            res << NUMBERS[0]
+          end
         else
+          if yi.nonzero? && (wan/1000).zero?
+            res << NUMBERS[0]
+          end
           res << [ words[1], PART_UNIT[1] ].join
         end
 
-        if words[2].start_with?(NUMBERS[0])
-          res << [ words[2], PART_UNIT[2] ].join if res.empty?
+        # ge
+        if ge.zero?
+          if yi.zero? && wan.zero?
+            res << words[2]
+          end
         else
-          res << NUMBERS[0] unless res.empty? || words[2].index(META_UNIT[0])
-          res << [ words[2], PART_UNIT[2] ].join
+          if wan.nonzero? && (ge/1000).zero?
+            res << NUMBERS[0]
+          end
+          res << words[2]
         end
 
         res << SECTION_UNIT[0]
       end
-
   end
 end
