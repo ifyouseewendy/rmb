@@ -10,5 +10,11 @@ require "rmb"
 # require "pry"
 # Pry.start
 
-require "irb"
-IRB.start
+
+begin
+  require "pry"
+  Pry.start
+rescue LoadError
+  require "irb"
+  IRB.start
+end

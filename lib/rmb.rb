@@ -1,5 +1,10 @@
 require "rmb/version"
 
+begin
+  require "pry"
+rescue LoadError
+end
+
 module RMB
   NUMBERS       = %w(零 壹 贰 叁 肆 伍 陆 柒 捌 玖)
   META_UNIT     = %w(仟 佰 拾)
