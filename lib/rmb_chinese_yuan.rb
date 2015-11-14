@@ -1,4 +1,4 @@
-require "rmb/version"
+require "rmb_chinese_yuan/version"
 
 begin
   require "pry"

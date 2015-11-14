@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'rmb/version'
+require 'rmb_chinese_yuan/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "rmb-chinese-yuan"
-  spec.version       = RMB::VERSION
+  spec.name          = "rmb_chinese_yuan"
+  spec.version       = RmbChineseYuan::VERSION
   spec.authors       = ["Di Wen"]
   spec.email         = ["ifyouseewendy@gmail.com"]
 

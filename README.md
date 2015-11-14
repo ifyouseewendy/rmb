@@ -7,7 +7,7 @@ RMB is a gem helps you generate money in Chinese Yuan.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'rmb-chinese-yuan'
+gem 'rmb_chinese_yuan'
 ```
 
 And then execute:
@@ -16,7 +16,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install rmb-chinese-yuan
+    $ gem install rmb_chinese_yuan
 
 ## Usage
 

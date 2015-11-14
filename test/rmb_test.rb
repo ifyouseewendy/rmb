@@ -2,7 +2,7 @@ require 'test_helper'
 
 class RMBTest < Minitest::Test
   def test_that_it_has_a_version_number
-    refute_nil ::RMB::VERSION
+    refute_nil ::RmbChineseYuan::VERSION
   end
 
   def test_convert
