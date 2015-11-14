@@ -42,36 +42,21 @@ class RMBTest < Minitest::Test
       '1,234,567,890' => '壹拾贰亿叁仟肆佰伍拾陆万柒仟捌佰玖拾元'
     }
     stubs.each do |k,v|
-      assert_equal v, RMB.convert(k)
+      assert_equal v, RMB.new(k).convert
     end
   end
 
   def test_for_argument_check
     assert_raises ArgumentError, "Invalid argument" do
-      RMB.convert('No kidding')
+      RMB.new('No kidding').convert
     end
 
     assert_raises ArgumentError, "Negative number passed" do
-      RMB.convert(-134)
+      RMB.new(-134).convert
     end
 
     assert_raises ArgumentError, "Length over 12" do
-      RMB.convert('1234567890123')
+      RMB.new('1234567890123').convert
     end
-  end
-
-  def test_meta_convert
-    assert_equal "壹",              RMB.meta_convert(1)
-    assert_equal "壹拾贰",          RMB.meta_convert(12)
-    assert_equal "壹佰贰拾叁",      RMB.meta_convert(123)
-    assert_equal "壹仟贰佰叁拾肆",  RMB.meta_convert(1234)
-
-    assert_equal "零",              RMB.meta_convert(0)
-    assert_equal "壹拾",            RMB.meta_convert(10)
-    assert_equal "壹佰壹拾",        RMB.meta_convert(110)
-    assert_equal "壹仟",            RMB.meta_convert(1000)
-    assert_equal "壹仟零壹",        RMB.meta_convert(1001)
-    assert_equal "壹仟零壹拾壹",    RMB.meta_convert(1011)
-    assert_equal "壹仟壹佰零壹",    RMB.meta_convert(1101)
   end
 end
