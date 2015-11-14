@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class RMBTest < Minitest::Test
+class RmbChineseYuanTest < Minitest::Test
   def test_that_it_has_a_version_number
     refute_nil ::RmbChineseYuan::VERSION
   end
@@ -59,7 +59,7 @@ class RMBTest < Minitest::Test
       RMB.new('No kidding').convert
     end
 
-    assert_raises ArgumentError, "Negative number passed" do
+    assert_raises ArgumentError, "Integer part of money is invalid" do
       RMB.new(-134).convert
     end
 
