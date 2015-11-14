@@ -13,6 +13,12 @@ class RMB
 
   attr_reader :integer, :decimal
 
+  def foo
+    [1,2,3].each do |i|
+      puts i
+    end
+  end
+
   def initialize(money)
     @integer, @decimal = preprocess(money)
   end
