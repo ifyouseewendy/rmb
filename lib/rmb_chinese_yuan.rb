@@ -1,7 +1,7 @@
-require "rmb_chinese_yuan/version"
+require 'rmb_chinese_yuan/version'
 
 begin
-  require "pry"
+  require 'pry'
 rescue LoadError
 end
 
@@ -27,19 +27,19 @@ class RMB
     def preprocess(money)
       money = money.to_s
 
-      raise ArgumentError, "Not a valid money<#{money}>" \
+      fail ArgumentError, "Not a valid money<#{money}>" \
         unless money.match(/^[\d|,|\.]+/)
 
-      integer, decimal = money.gsub(',', '').split('.')
-      decimal = decimal ? decimal[0,2] : ''
+      integer, decimal = money.delete(',').split('.')
+      decimal = decimal ? decimal[0, 2] : ''
 
-      raise ArgumentError, "Integer part of money<#{money}> is invalid" \
+      fail ArgumentError, "Integer part of money<#{money}> is invalid" \
         unless integer.match(/^\d*$/)
 
-      raise ArgumentError, "Decimal part of money<#{money}> is invalid" \
+      fail ArgumentError, "Decimal part of money<#{money}> is invalid" \
         unless decimal.match(/^\d*$/)
 
-      raise ArgumentError, "Integer part of money<#{money}> is longer than 12" \
+      fail ArgumentError, "Integer part of money<#{money}> is longer than 12" \
         if integer.length > 12
 
       [integer, decimal]
@@ -57,10 +57,10 @@ class RMB
       jiao, fen = split_into_digits(decimal, direction: :tail, count: 2)
 
       if jiao.zero? && fen.nonzero?
-        [NUMBERS[0], NUMBERS[fen], DECIMAL_UNIT[2] ].join
+        [NUMBERS[0], NUMBERS[fen], DECIMAL_UNIT[2]].join
       else
-        res = [ NUMBERS[jiao], DECIMAL_UNIT[1] ].join
-        res << [ NUMBERS[fen],  DECIMAL_UNIT[2] ].join if fen.nonzero?
+        res = [NUMBERS[jiao], DECIMAL_UNIT[1]].join
+        res << [NUMBERS[fen],  DECIMAL_UNIT[2]].join if fen.nonzero?
         res
       end
     end
@@ -85,7 +85,7 @@ class RMB
     end
 
     def read_into_words
-      @words = parts.reduce([]){|ar, part| ar << read_integer(part) }
+      @words = parts.reduce([]){ |ar, part| ar << read_integer(part) }
     end
 
     def read_integer(number)
@@ -95,8 +95,8 @@ class RMB
 
       numbers.each_with_index.reduce('') do |str, (n, i)|
         if n.nonzero?
-          str << [ NUMBERS[n], PART_UNIT[i] ].join
-        elsif !str.empty? && i+1 < 4 && numbers[i+1].nonzero?
+          str << [NUMBERS[n], PART_UNIT[i]].join
+        elsif !str.empty? && i + 1 < 4 && numbers[i+1].nonzero?
           str << NUMBERS[0]
         else
           str
@@ -120,7 +120,7 @@ class RMB
     end
 
     def part_yi
-      [ words[0], INTEGER_UNIT[0] ].join unless parts[0].zero?
+      [words[0], INTEGER_UNIT[0]].join unless parts[0].zero?
     end
 
     def part_wan
@@ -131,8 +131,8 @@ class RMB
           NUMBERS[0]
         end
       else
-        res = [ words[1], INTEGER_UNIT[1] ]
-        res.unshift NUMBERS[0] if yi.nonzero? && (wan/1000).zero?
+        res = [words[1], INTEGER_UNIT[1]]
+        res.unshift NUMBERS[0] if yi.nonzero? && (wan / 1000).zero?
         res.join
       end
     end
@@ -145,8 +145,8 @@ class RMB
           words[2]
         end
       else
-        res = [ words[2] ]
-        res.unshift NUMBERS[0] if wan.nonzero? && (ge/1000).zero?
+        res = [words[2]]
+        res.unshift NUMBERS[0] if wan.nonzero? && (ge / 1000).zero?
         res.join
       end
 

@@ -49,21 +49,21 @@ class RmbChineseYuanTest < Minitest::Test
       0.55            => '伍角伍分',
       '.55'           => '伍角伍分'
     }
-    stubs.each do |k,v|
+    stubs.each do |k, v|
       assert_equal v, RMB.new(k).convert
     end
   end
 
   def test_for_argument_check
-    assert_raises ArgumentError, "Invalid argument" do
+    assert_raises ArgumentError, 'Invalid argument' do
       RMB.new('No kidding').convert
     end
 
-    assert_raises ArgumentError, "Integer part of money is invalid" do
+    assert_raises ArgumentError, 'Integer part of money is invalid' do
       RMB.new(-134).convert
     end
 
-    assert_raises ArgumentError, "Length over 12" do
+    assert_raises ArgumentError, 'Length over 12' do
       RMB.new('1234567890123').convert
     end
   end
