@@ -25,36 +25,17 @@ module RMB
     def meta_convert(number)
       return NUMBERS[0] if number.zero?
 
+      numbers = number.to_s.chars.map(&:to_i)
+      numbers.unshift 0 while numbers.count < 4
+
       res = ''
-
-      thousand  = number / 1000
-      hundred   = number / 100 % 10
-      ten       = number / 10 % 10
-      one       = number % 10
-
-      # thousand
-      res << [ NUMBERS[thousand], META_UNIT[0] ].join unless thousand.zero?
-
-      # hundred
-      if hundred.zero?
-        if thousand.nonzero? && [ten, one].any?(&:nonzero?)
+      numbers.each_with_index do |n, i|
+        if n.nonzero?
+          res << [ NUMBERS[n], META_UNIT[i] ].join
+        elsif !res.empty? && i+1 < 4 && numbers[i+1].nonzero?
           res << NUMBERS[0]
         end
-      else
-        res << [ NUMBERS[hundred], META_UNIT[1] ].join
       end
-
-      # ten
-      if ten.zero?
-        if hundred.nonzero? && one.nonzero?
-          res << NUMBERS[0]
-        end
-      else
-        res << [ NUMBERS[ten], META_UNIT[2] ].join
-      end
-
-      # one
-      res << [ NUMBERS[one], META_UNIT[3] ].join unless one.zero?
 
       res
     end
