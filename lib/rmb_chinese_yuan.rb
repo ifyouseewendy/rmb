@@ -54,18 +54,15 @@ class RMB
     def convert_decimal
       return DECIMAL_UNIT[0] if @decimal.to_i.zero?
 
-      jiao, fen = @decimal.chars.map(&:to_i)
-      res = ''
+      jiao, fen = split_into_digits(@decimal, direction: :tail, count: 2)
 
-      if jiao.zero? && fen.to_i.nonzero?
-        res << NUMBERS[jiao]
-        res << [ NUMBERS[fen], DECIMAL_UNIT[2] ].join
+      if jiao.zero? && fen.nonzero?
+        [NUMBERS[0], NUMBERS[fen], DECIMAL_UNIT[2] ].join
       else
-        res << [ NUMBERS[jiao], DECIMAL_UNIT[1] ].join
-        res << [ NUMBERS[fen],  DECIMAL_UNIT[2] ].join if fen && fen.nonzero?
+        res = [ NUMBERS[jiao], DECIMAL_UNIT[1] ].join
+        res << [ NUMBERS[fen],  DECIMAL_UNIT[2] ].join if fen.nonzero?
+        res
       end
-
-      res
     end
 
     def join(integer_words, decimal_words)
@@ -94,8 +91,7 @@ class RMB
     def read_integer(number)
       return NUMBERS[0] if number.zero?
 
-      numbers = number.to_s.chars.map(&:to_i)
-      numbers.unshift 0 while numbers.count < 4
+      numbers = split_into_digits(number)
 
       numbers.each_with_index.reduce('') do |str, (n, i)|
         if n.nonzero?
@@ -108,35 +104,51 @@ class RMB
       end
     end
 
+    def split_into_digits(number, direction: :head, count: 4)
+      digits = number.to_s.chars.map(&:to_i)
+      if direction == :head
+        digits.unshift 0 while digits.count < count
+      else
+        digits.push 0 while digits.count < count
+      end
+      digits
+    end
+
     def join_words
-      res = ''
+      res = [part_yi, part_wan, part_ge].join
+      res << INTEGER_UNIT[2]
+    end
 
+    def part_yi
+      [ @words[0], INTEGER_UNIT[0] ].join unless @parts[0].zero?
+    end
+
+    def part_wan
       yi, wan, ge = @parts
-
-      res << [ @words[0], INTEGER_UNIT[0] ].join if yi.nonzero?
 
       if wan.zero?
         if yi.nonzero? && ge.nonzero?
-          res << NUMBERS[0]
+          NUMBERS[0]
         end
       else
-        if yi.nonzero? && (wan/1000).zero?
-          res << NUMBERS[0]
-        end
-        res << [ @words[1], INTEGER_UNIT[1] ].join
+        res = [ @words[1], INTEGER_UNIT[1] ]
+        res.unshift NUMBERS[0] if yi.nonzero? && (wan/1000).zero?
+        res.join
       end
+    end
+
+    def part_ge
+      yi, wan, ge = @parts
 
       if ge.zero?
         if yi.zero? && wan.zero?
-          res << @words[2]
+          @words[2]
         end
       else
-        if wan.nonzero? && (ge/1000).zero?
-          res << NUMBERS[0]
-        end
-        res << @words[2]
+        res = [ @words[2] ]
+        res.unshift NUMBERS[0] if wan.nonzero? && (ge/1000).zero?
+        res.join
       end
 
-      res << INTEGER_UNIT[2]
     end
 end
