@@ -11,7 +11,7 @@ class RMB
   INTEGER_UNIT  = %w(亿 万 元)
   DECIMAL_UNIT  = %w(整 角 分)
 
-  attr_reader :integer, :decimal
+  attr_reader :integer, :decimal, :parts, :words
 
   def initialize(money)
     @integer, @decimal = preprocess(money)
@@ -52,9 +52,9 @@ class RMB
     end
 
     def convert_decimal
-      return DECIMAL_UNIT[0] if @decimal.to_i.zero?
+      return DECIMAL_UNIT[0] if decimal.to_i.zero?
 
-      jiao, fen = split_into_digits(@decimal, direction: :tail, count: 2)
+      jiao, fen = split_into_digits(decimal, direction: :tail, count: 2)
 
       if jiao.zero? && fen.nonzero?
         [NUMBERS[0], NUMBERS[fen], DECIMAL_UNIT[2] ].join
@@ -85,7 +85,7 @@ class RMB
     end
 
     def read_into_words
-      @words = @parts.reduce([]){|ar, part| ar << read_integer(part) }
+      @words = parts.reduce([]){|ar, part| ar << read_integer(part) }
     end
 
     def read_integer(number)
@@ -120,32 +120,32 @@ class RMB
     end
 
     def part_yi
-      [ @words[0], INTEGER_UNIT[0] ].join unless @parts[0].zero?
+      [ words[0], INTEGER_UNIT[0] ].join unless parts[0].zero?
     end
 
     def part_wan
-      yi, wan, ge = @parts
+      yi, wan, ge = parts
 
       if wan.zero?
         if yi.nonzero? && ge.nonzero?
           NUMBERS[0]
         end
       else
-        res = [ @words[1], INTEGER_UNIT[1] ]
+        res = [ words[1], INTEGER_UNIT[1] ]
         res.unshift NUMBERS[0] if yi.nonzero? && (wan/1000).zero?
         res.join
       end
     end
 
     def part_ge
-      yi, wan, ge = @parts
+      yi, wan, ge = parts
 
       if ge.zero?
         if yi.zero? && wan.zero?
-          @words[2]
+          words[2]
         end
       else
-        res = [ @words[2] ]
+        res = [ words[2] ]
         res.unshift NUMBERS[0] if wan.nonzero? && (ge/1000).zero?
         res.join
       end
