@@ -1,6 +1,7 @@
 # RMB
 
 [![Build Status](https://travis-ci.org/ifyouseewendy/rmb.svg?branch=master)](https://travis-ci.org/ifyouseewendy/rmb)
+[![Code Climate](https://codeclimate.com/github/ifyouseewendy/rmb/badges/gpa.svg)](https://codeclimate.com/github/ifyouseewendy/rmb)
 
 RMB is a gem helps you generate money in Chinese Yuan.
 
