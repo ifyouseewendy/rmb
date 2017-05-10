@@ -25,7 +25,7 @@ class RMB
 
     # Private: Process for type conversion, ',' substitution, and '.' split.
     def preprocess(money)
-      money = money.to_s
+      money = money.is_a?(String) ? money.to_s : money.to_f.to_s
 
       fail ArgumentError, "Not a valid money<#{money}>" \
         unless money.match(/^[\d|,|\.]+/)
