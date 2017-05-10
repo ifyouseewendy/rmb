@@ -54,6 +54,11 @@ class RmbChineseYuanTest < Minitest::Test
     end
   end
 
+  def test_for_bigdecimal
+    price = BigDecimal.new("1234.01")
+    assert_equal '壹仟贰佰叁拾肆元零壹分', RMB.new(price).convert
+  end
+
   def test_for_argument_check
     assert_raises ArgumentError, 'Invalid argument' do
       RMB.new('No kidding').convert
